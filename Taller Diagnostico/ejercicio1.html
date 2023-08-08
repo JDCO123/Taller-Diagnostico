@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="ejercicio1.css">
+  <title>Paleta de Colores</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Bienvenido a la aplicación de paleta de colores</h1>
+    <div id="login-form">
+      <h2>Login</h2>
+      <input type="text" id="username" placeholder="Usuario">
+      <input type="password" id="password" placeholder="Contraseña">
+      <button id="login-btn">Login</button>
+      <p id="login-error" class="error"></p>
+    </div>
+    <div id="color-palette" class="hidden">
+      <h2>Paleta de Colores</h2>
+      <div id="color1" class="color"></div>
+      <div id="color2" class="color"></div>
+      <div id="color3" class="color"></div>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script>
+    const MAX_LOGIN_ATTEMPTS = 3;
+let loginAttempts = 0;
+let currentUser = null;
+
+const loginForm = document.getElementById("login-form");
+const colorPalette = document.getElementById("color-palette");
+const loginError = document.getElementById("login-error");
+const logoutBtn = document.getElementById("logout-btn");
+const colors = document.querySelectorAll(".color");
+
+function showPalette(username) {
+  currentUser = username;
+  loginForm.classList.add("hidden");
+  colorPalette.classList.remove("hidden");
+  updatePalette();
+}
+
+function updatePalette() {
+  const randomColors = generateRandomColors(3);
+  colors.forEach((color, index) => {
+    color.style.backgroundColor = randomColors[index];
+  });
+}
+
+function generateRandomColors(numColors) {
+  const randomColors = [];
+  for (let i = 0; i < numColors; i++) {
+    const color = "#" + Math.floor(Math.random() * 16777215).toString(16);    randomColors.push(color);
+  }
+  return randomColors;
+}
+
+document.getElementById("login-btn").addEventListener("click", () => {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  if (username === "jose" && password === "1234") {
+    loginError.textContent = "";
+    loginAttempts = 0;
+    showPalette(username);
+  } else {
+    loginAttempts++;
+    if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+      loginError.textContent = "Se excedió el número máximo de intentos de inicio de sesión. Por favor intente de nuevo más tarde.";
+      document.getElementById("login-btn").disabled = true;
+    } else {
+      loginError.textContent = "Usuario o contraseña invalido. Por favor intente de nuevo.";
+    }
+  }
+});
+
+logoutBtn.addEventListener("click", () => {
+  currentUser = null;
+  loginForm.classList.remove("hidden");
+  colorPalette.classList.add("hidden");
+  document.getElementById("login-btn").disabled = false;
+});
+
+updatePalette();
+
+  </script>
+</body>
+</html>
